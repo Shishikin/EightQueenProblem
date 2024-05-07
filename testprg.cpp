@@ -125,8 +125,9 @@ struct Board
         return out;
     }
 
+
     // надо сделать подгон на +7 для столбцов и прочее
-/*
+
     bool IsRotate(Board other) const
     {   
         Board board90 = other;
@@ -139,58 +140,12 @@ struct Board
         {
             return true;
         }
-        return false;
-        /*
-        if (*this == other.Rotate(1.57)
-            || *this == other.Rotate(3.14)
-            || *this == other.Rotate(4.71))
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-        */
- //   }
+        return false;         
+    }
     
 };
 
-bool IsRotate(Board a, Board other) 
-{
-    int r = 0;
-    Board board90 = other;
-    board90 = board90.Rotate(M_PI / 2);
-    
-    for (int i = 0; i < board90.board.size(); ++i)
-    {
-        board90.board[i].x = abs(board90.board[i].x);
-    }/*
-    for (int i = 0; i < board90.board.size(); ++i)
-    {
-        r = board90.board[i].x;
-        board90.board[i].x = board90.board[i].y;
-        board90.board[i].y = r;
-    }*/
-    if (a == board90)
-    {
-        return true;
-    }
-    return false;
-}
-    /*
-    if (*this == other.Rotate(1.57)
-        || *this == other.Rotate(3.14)
-        || *this == other.Rotate(4.71))
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
-    */
-    //   }
+
 
 
 void Queen::Boards(Board& boards, int index)
@@ -250,18 +205,28 @@ int main()
         ++count;
     }
     
-    noRotationBoard.push_back(boards[0]);
-
-    /*
+    
+    
     for (int i = 0; i < 92; ++i)
     {
         std::cout << "Решение " << i << '\n';
         std::cout << boards[i] << '\n';
-    }*/
+    }
 
+    std::cout << boards[40].Rotate(M_PI);
+ //     std::cout << boards[4].Rotate(M_PI);
+ //   std::cout << boards[4].IsRotate(boards[40]);
+ //   std::cout << boards[27].IsRotate(boards[4]);
+ //   std::cout << boards[35].IsRotate(boards[27]);
+ //   std::cout << boards[40].IsRotate(boards[35]);
+
+
+
+/*
+    noRotationBoard.push_back(boards[0]);
     std::vector<Board> boardNoRotate;
     boardNoRotate.push_back(boards[0]);
-
+    
     count = 0;
     for (int i = 1; i < 92; ++i)
     {
@@ -269,7 +234,7 @@ int main()
         for (int k = 0; k < boardNoRotate.size(); ++k)
         {
             if (
-                IsRotate(boards[i], boardNoRotate[k])
+                boards[i].IsRotate(boardNoRotate[k])
                 )
             {                   
                 ++count;
@@ -290,13 +255,13 @@ int main()
 
         
     }
-
+    
 
     std::cout << count << '\n';
 
-  //  std::cout << IsRotate(boards[4], boards[64]);
+ //   std::cout << IsRotate(boards[64], boards[4]);
 
-    /*
+    
 
     for (int i = 0; i < 92; ++i)
     {
@@ -309,8 +274,8 @@ int main()
         std::cout << "Решение без поворотов" << k << '\n';
         std::cout << boardNoRotate[k] << '\n';
     }
-
     */
+    
     
     // Удаление объектов-ферзей
     while (pLastQueen) 
