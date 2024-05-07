@@ -131,15 +131,18 @@ struct Board
     bool IsRotate(Board other) const
     {   
         Board board90 = other;
-        board90 = board90.Rotate(M_PI / 2);
-        for (int i = 0; i < board90.board.size(); ++i)
+        for (int f = 0; f < 4; ++f)
         {
-            board90.board[i].x += 7;
-        }
-        if (*this == board90)
-        {
-            return true;
-        }
+            board90 = board90.Rotate(M_PI / 2);
+            for (int i = 0; i < board90.board.size(); ++i)
+            {
+                board90.board[i].x += 7;
+            }
+            if (*this == board90)
+            {
+                return true;
+            }
+        }        
         return false;         
     }
     
@@ -222,7 +225,7 @@ int main()
 
 
 
-/*
+
     noRotationBoard.push_back(boards[0]);
     std::vector<Board> boardNoRotate;
     boardNoRotate.push_back(boards[0]);
@@ -274,7 +277,7 @@ int main()
         std::cout << "Решение без поворотов" << k << '\n';
         std::cout << boardNoRotate[k] << '\n';
     }
-    */
+    
     
     
     // Удаление объектов-ферзей
