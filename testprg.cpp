@@ -114,6 +114,7 @@ struct Board
         return true;
     }
     
+    
     friend std::ostream& operator <<(std::ostream& out, const Board& boards)
     {
         
@@ -124,7 +125,7 @@ struct Board
         }
         return out;
     }
-
+    
 
     // надо сделать подгон на +7 для столбцов и прочее
 
@@ -172,42 +173,33 @@ int main()
     SetConsoleOutputCP(1251);
 #endif
 
-    Board board = Board(8);
+    int limit = 8;
+//    Input(limit, "Введите размер доски ");
+
+    limit = limit - 1;
+    Board board = Board(limit+1);
     std::vector<Board> boards;
     std::vector<Board> noRotationBoard;
-    for (int i = 0; i < 92; ++i)
-    {
-        boards.push_back(board);
-    }
+
 
     int count = 0;
     Queen* pLastQueen = NULL;
-    for (int i = 0; i <= 7; i++) 
+    for (int i = 0; i <= limit; i++) 
     {
         // Создать и инициализировать нового ферзя в i-м столбце
         pLastQueen = new Queen(i, pLastQueen);        
-        if (!pLastQueen->FindSolution())
+        if (!pLastQueen->FindSolution(limit))
             std::cout << "Нет решения.\n";
     }
-    pLastQueen->Print(std::cout, count);
-    pLastQueen->Boards(boards[count], 0);
-    ++count;
  
-
-
-
-
- //   std::cout << board1.IsRotate(board1.Rotate(M_PI));
-
-     
-
-    while (pLastQueen->Advance())
+    do
     {
         pLastQueen->Print(std::cout, count);
+        boards.push_back(board);
         pLastQueen->Boards(boards[count], 0);
         ++count;
-    }
-    
+    } while (pLastQueen->Advance(limit));
+ 
     
     
     for (int i = 0; i < 92; ++i)

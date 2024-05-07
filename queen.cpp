@@ -3,30 +3,30 @@
 Queen::Queen(int col, Queen* pNgb)
     : column(col), pNeighbor(pNgb), row(0) {}
 
-bool Queen::FindSolution() 
+bool Queen::FindSolution(int limit) 
 {
     if (pNeighbor)
         if (pNeighbor->CanAttack(row, column))
-            return Advance();
+            return Advance(limit);
     return true;
 }
 
-bool Queen::Advance() 
+bool Queen::Advance(int limit) 
 {
     // Пробуем переместиться на следующую строку
-    if (row < 7) 
+    if (row < limit)
     {
         row++;
-        return FindSolution();
+        return FindSolution(limit);
     }
     // Если ферзь стоит на последней строке, то надо
     // попытаться сдвинуть соседа к следующему решению
     if (pNeighbor)
-        if (pNeighbor->Advance()) 
+        if (pNeighbor->Advance(limit))
         {
             // Начинаем снова с 1-й строки
             row = 0;
-            return FindSolution();
+            return FindSolution(limit);
         }
     return false;
 }
