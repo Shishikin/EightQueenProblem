@@ -31,10 +31,10 @@ bool Queen::Advance(int limit)
     return false;
 }
 
-void Queen::Print(std::ostream& os, int count) const 
+void Queen::Print(std::ostream& os, int count, int limit) const 
 {
     if (pNeighbor)
-        pNeighbor->Print(os, count);
+        pNeighbor->Print(os, count, limit);
     if (column == 0) 
     {
         os << "Решение #" << count << '\n';
@@ -42,12 +42,12 @@ void Queen::Print(std::ostream& os, int count) const
     os << "|---|---|---|---|---|---|---|---|\n";
     os << '|';
 
-    for (int i = 0; i <= 7; i++) 
+    for (int i = 0; i <= limit; i++) 
     {
         os << (i == row ? " O |" : "   |");
     }
     os << '\n';
-    if (column == 7) {
+    if (column == limit) {
         os << "|---|---|---|---|---|---|---|---|\n";
     }
 }

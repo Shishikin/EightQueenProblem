@@ -11,7 +11,7 @@ class Queen {
 
     bool FindSolution(int);
     bool Advance(int);
-    void Print(std::ostream&, int) const;
+    void Print(std::ostream&, int, int) const;
     void Boards(Board& board, int index);
 
     Queen* GetNeighbor() {
@@ -26,30 +26,3 @@ class Queen {
     bool CanAttack(int r, int c) const;
 };
 
-/*
-bool FixFlow()
-{
-    if (std::cin.fail()) {
-        std::cin.clear();
-        std::cin.ignore();
-        fflush(stdin);
-        return true;
-        //        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    }
-    else
-    {
-        return false;
-    }
-}
-
-
-template <typename T>
-void Input(T& side1, const std::string& message)
-{
-    do
-    {
-        std::cout << message << '\n';
-        std::cin >> side1;
-    } while (FixFlow());
-}
-*/

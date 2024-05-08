@@ -11,6 +11,32 @@
 
 const double M_PI = 3.14159265358979323846;
 
+bool FixFlow()
+{
+    if (std::cin.fail()) {
+        std::cin.clear();
+        std::cin.ignore();
+        fflush(stdin);
+        return true;
+        //        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+template <typename T>
+void Input(T& side1, const std::string& message)
+{
+    do
+    {
+        std::cout << message << '\n';
+        std::cin >> side1;
+    } while (FixFlow());
+}
+
 class PointInteger
 {
 public:
@@ -20,60 +46,42 @@ public:
 
     PointInteger(int x_, int y_) { x = x_; y = y_; }
 
-    PointInteger Rotate(double rad)
+    // поворот точки вокруг оси на заданный угол
+    PointInteger Rotate(const double rad) const
     {
-        int x_ = x * round(cos(rad)) - y * round(sin(rad));
-        int y_ = x * round(sin(rad)) + y * round(cos(rad));
+        const int x_ = x * round(cos(rad)) - y * round(sin(rad));
+        const int y_ = x * round(sin(rad)) + y * round(cos(rad));
         return PointInteger(x_, y_);
     }
     
-    bool operator ==(const PointInteger& other)
+    bool operator ==(const PointInteger& other) const
     {
         return (x == other.x && y == other.y) ? true : false;
     }
-    
+
     // для сортировки
     bool operator<(const PointInteger& other) const
     {
-        if (x < other.x)
-        {
-            return true;
-        }
-        else
-        {
-            if (x > other.x)
-            {
-                return false;
-            }
-            else
-            {
-                if (y < other.y)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
+        return (x < other.x || (x == other.x && y < other.y));        
     }
 
-    friend std::ostream& operator <<(std::ostream& out, const PointInteger& point)
+    friend std::ostream& operator <<(std::ostream& out, const PointInteger& point) 
     {
         out << point.x << '\t' << point.y << '\n';
         return out;
     }
 };
 
+// набор ферзей, надо убрать название board
 struct Board
 {
 
+    // координаты ферзей
     std::vector<PointInteger> board;
 
     Board(){}
 
-    Board(int size)
+    Board(const int size)
     {
         for (int i = 0; i < size; ++i)
         {
@@ -81,7 +89,8 @@ struct Board
         }
     }
 
-    Board Rotate(double rad)
+    // меняет координаты каждого ферзя (поворот точки вокруг оси на заданный угол)
+    Board Rotate(const double rad) const
     {
         Board board_;
         for (auto a : board)
@@ -91,14 +100,14 @@ struct Board
         return board_;
     }
         
-    
+    // добавление ферзя
     void Push(const PointInteger& a)
     {
         board.push_back(a);
     }
     
-
-    bool operator ==(const Board& other)
+    // оператор равенства для 
+    bool operator ==(const Board& other) const
     {
         Board b1 = *this;
         Board b2 = other;
@@ -115,23 +124,135 @@ struct Board
     }
     
     
+
+    int MaxX() const
+    {
+        int max = -10000000;
+        for (int i = 0; i < board.size(); ++i)
+        {
+            if (board[i].x > max)
+            {
+                max = board[i].x;
+            }
+        }
+        return max;
+    }
+
+    int MinX() const
+    {
+        int max = 10000000;
+        for (int i = 0; i < board.size(); ++i)
+        {
+            if (board[i].x < max)
+            {
+                max = board[i].x;
+            }
+        }
+        return max;
+    }
+    
+    int MaxY() const
+    {
+        int max = -10000000;
+        for (int i = 0; i < board.size(); ++i)
+        {
+            if (board[i].y > max)
+            {
+                max = board[i].y;
+            }
+        }
+        return max;
+    }
+
+    int MinY() const
+    {
+        int max = 10000000;
+        for (int i = 0; i < board.size(); ++i)
+        {
+            if (board[i].y < max)
+            {
+                max = board[i].y;
+            }
+        }
+        return max;
+    }
+
+    void Print(std::ostream& out) const
+    {
+        std::string print;
+        const int sizeX = MaxX() - MinX() + 1;
+        const int sizeY = MaxY() - MinY() + 1;
+        for (int k = sizeY; k > 0; k--)
+        {
+            print.push_back(static_cast<char>(k + 48));
+            for (int h = 0; h < sizeX; ++h)
+            {
+                if ((k + h) % 2 == 0)
+                {
+                    print.push_back('*');
+                }
+                else
+                {
+                    print.push_back(' ');
+                }
+            }
+            print.push_back('\n');
+        }
+        print.push_back(' ');
+        for (int h = 0; h < sizeX; ++h)
+        {
+            print.push_back(static_cast<char>(97 + h));
+        }
+        print.push_back('\n');
+
+        for (int i = 0; i < board.size(); ++i)
+        {
+            print[board[i].y * (sizeX + 2) + board[i].x + 1] = 'Q';
+        }
+
+        out << print;
+    }
+
     friend std::ostream& operator <<(std::ostream& out, const Board& boards)
     {
-        
+        std::string print;
+        const int sizeX = boards.MaxX() - boards.MinX() + 1;
+        const int sizeY = boards.MaxY() - boards.MinY() + 1;
+        for (int k = sizeY; k > 0; k--)
+        {
+            print.push_back(static_cast<char>(k + 48));
+            for (int h = 0; h < sizeX; ++h)
+            {
+                if ((k + h) % 2 == 0)
+                {
+                    print.push_back('*');
+                }
+                else
+                {
+                    print.push_back(' ');
+                }
+            }
+            print.push_back('\n');
+        }
+        print.push_back(' ');
+        for (int h = 0; h < sizeX; ++h)
+        {
+            print.push_back(static_cast<char>(97 + h));
+        }
+        print.push_back('\n');
 
         for (int i = 0; i < boards.board.size(); ++i)
         {
-            out << boards.board[i];
+            print[boards.board[i].y * (sizeX + 2) + boards.board[i].x + 1] = 'Q';
         }
+
+        out << print;
         return out;
     }
     
-
-    // надо сделать подгон на +7 для столбцов и прочее
-
-    bool IsRotate(Board other) const
+    // истина если решение просто поворот на число кратное 90 градусам
+    bool IsRotate(Board  board90) const
     {   
-        Board board90 = other;
         for (int f = 0; f < 4; ++f)
         {
             board90 = board90.Rotate(M_PI / 2);
@@ -152,7 +273,7 @@ struct Board
 
 
 
-void Queen::Boards(Board& boards, int index)
+void Queen::Boards(Board& boards, int index) 
 {
     if (pNeighbor)
         pNeighbor->Boards(boards, index + 1);
@@ -161,7 +282,12 @@ void Queen::Boards(Board& boards, int index)
 //        std::cout << "Строка: " << row << "; Cтолбец: " << column << "\n";
 }
 
-
+// ввести размер доски
+void InputSizeBoard(int& limit)
+{
+    Input(limit, "Введите размер доски ");
+    limit = limit - 1;
+}
 
 
 
@@ -173,11 +299,17 @@ int main()
     SetConsoleOutputCP(1251);
 #endif
 
-    int limit = 8;
-//    Input(limit, "Введите размер доски ");
+    // открытия файла ввода
+    std::ofstream out;
+    std::string pathFileOutput;
+    std::cout << "OutputFile\n";
+    std::cin >> pathFileOutput;
+    out.open(pathFileOutput);
+    
 
-    limit = limit - 1;
-    Board board = Board(limit+1);
+    int limit = 4;
+    InputSizeBoard(limit);
+    Board board = Board(limit + 1);
     std::vector<Board> boards;
     std::vector<Board> noRotationBoard;
 
@@ -192,38 +324,31 @@ int main()
             std::cout << "Нет решения.\n";
     }
  
+    // поиск решений
     do
     {
-        pLastQueen->Print(std::cout, count);
+//        pLastQueen->Print(std::cout, count, limit);
         boards.push_back(board);
         pLastQueen->Boards(boards[count], 0);
         ++count;
     } while (pLastQueen->Advance(limit));
  
     
-    
-    for (int i = 0; i < 92; ++i)
+   
+    for (int i = 0; i < boards.size(); ++i)
     {
-        std::cout << "Решение " << i << '\n';
+        std::cout << "Решение " << i << '\n' << '\n';
+        out << "Решение " << i << '\n' << '\n';
         std::cout << boards[i] << '\n';
+        out << boards[i] << '\n';
     }
-
-    std::cout << boards[40].Rotate(M_PI);
- //     std::cout << boards[4].Rotate(M_PI);
- //   std::cout << boards[4].IsRotate(boards[40]);
- //   std::cout << boards[27].IsRotate(boards[4]);
- //   std::cout << boards[35].IsRotate(boards[27]);
- //   std::cout << boards[40].IsRotate(boards[35]);
-
-
-
-
+    
+    // поиск решений без поворотов
     noRotationBoard.push_back(boards[0]);
     std::vector<Board> boardNoRotate;
     boardNoRotate.push_back(boards[0]);
-    
     count = 0;
-    for (int i = 1; i < 92; ++i)
+    for (int i = 1; i < boards.size(); ++i)
     {
         bool flag = 1;
         for (int k = 0; k < boardNoRotate.size(); ++k)
@@ -238,39 +363,20 @@ int main()
         }
         if (flag)
         {
-            std::cout << "true " << i << '\n';
             boardNoRotate.push_back(boards[i]);
         }
-
-
-        else
-        {
-            std::cout << "false " << i << '\n';
-        }
-
-        
     }
     
 
-    std::cout << count << '\n';
-
- //   std::cout << IsRotate(boards[64], boards[4]);
-
-    
-
-    for (int i = 0; i < 92; ++i)
-    {
-        std::cout << "Решение " << i << '\n';
-        std::cout << boards[i] << '\n';
-    }
-    
     for (int k = 0; k < boardNoRotate.size(); ++k)
     {
-        std::cout << "Решение без поворотов" << k << '\n';
+        std::cout << "Решение без поворотов " << k << '\n' << '\n';
+        out << "Решение без поворотов " << k << '\n' << '\n';
         std::cout << boardNoRotate[k] << '\n';
+        out << boardNoRotate[k] << '\n';
     }
     
-    
+    out.close();
     
     // Удаление объектов-ферзей
     while (pLastQueen) 
@@ -279,6 +385,7 @@ int main()
         delete pLastQueen;
         pLastQueen = pPrevQueen;
     }
+    
     
 
     return 0;
